@@ -486,20 +486,7 @@ function renderHome() {
           </div>
         </div>
 
-        <!-- Mini stats -->
-        <div style="display:flex;gap:10px;margin-top:14px">
-          ${[
-            { val: activeShipments.length, label: 'Actifs', action: "Router.navigate('shipments')" },
-            { val: '+500', label: 'Relais', action: "Router.navigate('map')" },
-            { val: '24/7', label: 'Support', action: "openSupport()" },
-          ].map(s => `
-            <div onclick="${s.action}" style="flex:1;background:rgba(255,255,255,0.15);border-radius:12px;padding:11px 8px;text-align:center;cursor:pointer;backdrop-filter:blur(10px);border:1px solid rgba(255,255,255,0.2);transition:background 0.15s" 
-              onmousedown="this.style.background='rgba(255,255,255,0.25)'" onmouseup="this.style.background='rgba(255,255,255,0.15)'">
-              <div style="font-size:20px;font-weight:800;color:#fff">${s.val}</div>
-              <div style="font-size:10px;color:rgba(255,255,255,0.78);margin-top:2px;font-weight:600">${s.label}</div>
-            </div>
-          `).join('')}
-        </div>
+
       </div>
     </div>
 
@@ -508,20 +495,12 @@ function renderHome() {
       <div class="section-label" style="padding:14px 16px 6px">Services rapides</div>
       <div class="services-grid">
         <div class="service-item" id="svc-envoyer" onclick="Router.navigate('create-shipment')">
-          <div class="service-icon" style="background:#FFF3E8">${icon('package', 24, '#FF6C00')}</div>
-          <span class="service-label">Envoyer</span>
-        </div>
-        <div class="service-item" id="svc-suivre" onclick="Router.navigate('tracking')">
-          <div class="service-icon" style="background:#EEF4FF">${icon('search', 24, '#2F6BE0')}</div>
-          <span class="service-label">Suivre</span>
+          <div class="service-icon" style="background:#FFF3E8">${icon('package', 28, '#FF6C00')}</div>
+          <span class="service-label" style="text-align:center">Envoyer un colis</span>
         </div>
         <div class="service-item" id="svc-relais" onclick="Router.navigate('map')">
-          <div class="service-icon" style="background:#E6F6EC">${icon('mapPin', 24, '#16A34A')}</div>
-          <span class="service-label">Relais</span>
-        </div>
-        <div class="service-item" id="svc-tarifs" onclick="Router.navigate('pricing')">
-          <div class="service-icon" style="background:#FEF8E7">${icon('receipt', 24, '#F5B400')}</div>
-          <span class="service-label">Tarifs</span>
+          <div class="service-icon" style="background:#E6F6EC">${icon('mapPin', 28, '#16A34A')}</div>
+          <span class="service-label" style="text-align:center">Trouver un relais</span>
         </div>
       </div>
     </div>
@@ -554,43 +533,7 @@ function renderHome() {
       </div>
     `}
 
-    <!-- Modes de livraison -->
-    <div style="padding:16px">
-      <h3 style="font-size:15px;font-weight:700;color:#1A1A1A;margin-bottom:12px">Modes de livraison</h3>
-      <div style="display:flex;flex-direction:column;gap:10px">
-        <div class="card" style="border:2px solid #F5B400;border-radius:16px;padding:16px;cursor:pointer" onclick="Router.navigate('create-shipment')">
-          <div style="display:flex;align-items:center;gap:12px;margin-bottom:10px">
-            <div style="width:44px;height:44px;background:linear-gradient(135deg,#FFB020,#FF8A00);border-radius:13px;display:flex;align-items:center;justify-content:center;flex-shrink:0">
-              ${icon('home', 22, 'white')}
-            </div>
-            <div style="flex:1">
-              <div style="font-size:15px;font-weight:800;color:#1A1A1A">Livraison à domicile</div>
-              <div style="font-size:12px;color:#6B7280">Livré le jour même en zone urbaine</div>
-            </div>
-            ${icon('arrowRight', 18, '#F5B400')}
-          </div>
-          <div style="background:#FEF8E7;border-left:3px solid #F5B400;border-radius:8px;padding:9px 12px;font-size:12px;font-weight:600;color:#78350F;display:flex;align-items:center;gap:8px">
-            ${icon('zap', 13, '#F5B400')} Service rapide, votre colis arrive directement chez vous
-          </div>
-        </div>
 
-        <div class="card" style="border:2px solid #5B9BFF;border-radius:16px;padding:16px;cursor:pointer" onclick="Router.navigate('map')">
-          <div style="display:flex;align-items:center;gap:12px;margin-bottom:10px">
-            <div style="width:44px;height:44px;background:linear-gradient(135deg,#4F8DF7,#2F6BE0);border-radius:13px;display:flex;align-items:center;justify-content:center;flex-shrink:0">
-              ${icon('store', 22, 'white')}
-            </div>
-            <div style="flex:1">
-              <div style="font-size:15px;font-weight:800;color:#1A1A1A">Livraison en point relais</div>
-              <div style="font-size:12px;color:#6B7280">+500 relais partout en Côte d'Ivoire</div>
-            </div>
-            ${icon('arrowRight', 18, '#5B9BFF')}
-          </div>
-          <div style="background:#EEF4FF;border-left:3px solid #5B9BFF;border-radius:8px;padding:9px 12px;font-size:12px;font-weight:600;color:#1E3A5F;display:flex;align-items:center;gap:8px">
-            ${icon('box', 13, '#5B9BFF')} Économique et fiable, récupérez quand vous voulez
-          </div>
-        </div>
-      </div>
-    </div>
 
     <!-- Tarifs CTA -->
     <div style="padding:0 16px 16px">
@@ -1086,23 +1029,6 @@ function renderTrackingDetail(shipment) {
       </div>
     ` : ''}
 
-    <!-- Event log -->
-    <div class="divider-soft"></div>
-    <div style="padding:16px">
-      <div style="font-size:14px;font-weight:700;color:#1A1A1A;margin-bottom:12px">Historique</div>
-      ${(shipment.events || []).map((ev, i) => `
-        <div style="display:flex;gap:10px;padding:10px 0;${i < shipment.events.length - 1 ? 'border-bottom:1px solid #F6F7F9' : ''}">
-          <div style="width:34px;height:34px;border-radius:11px;background:${i===0?'#FF6C00':'#F6F7F9'};display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px">
-            ${i === 0 ? icon('checkCircle', 15, 'white') : icon('clock', 15, '#9CA3AF')}
-          </div>
-          <div style="flex:1">
-            <div style="font-size:13px;font-weight:600;color:${i===0?'#FF6C00':'#1A1A1A'}">${getStatusLabel(ev.status)}</div>
-            ${ev.notes ? `<div style="font-size:12px;color:#6B7280;margin-top:2px;line-height:1.4">${ev.notes}</div>` : ''}
-            <div style="font-size:10px;color:#9CA3AF;margin-top:4px;font-family:monospace">${formatDateTime(ev.timestamp)}</div>
-          </div>
-        </div>
-      `).join('')}
-    </div>
 
     <!-- Actions -->
     <div style="padding:0 16px 28px;display:flex;flex-direction:column;gap:8px">
@@ -2977,8 +2903,8 @@ function buildApp() {
     <div id="screen-tracking-detail"  class="screen"></div>
     <div id="screen-profile"          class="screen"></div>
     <div id="screen-notifications"    class="screen"></div>
-    <div id="screen-login"            class="screen fullscreen" style="background:#fff;display:flex;flex-direction:column"></div>
-    <div id="screen-create-shipment"  class="screen fullscreen" style="background:#F6F7F9;display:flex;flex-direction:column"></div>
+    <div id="screen-login"            class="screen fullscreen" style="background:#fff"></div>
+    <div id="screen-create-shipment"  class="screen fullscreen" style="background:#F6F7F9"></div>
     <div id="screen-map"              class="screen"></div>
     <div id="screen-pricing"          class="screen"></div>
     <div id="screen-about"            class="screen"></div>
@@ -3005,12 +2931,11 @@ function buildApp() {
         </div>
         <span class="nav-label">Suivre</span>
       </div>
-      <div class="nav-item" data-screen="notifications" onclick="Router.navigate('notifications')" style="position:relative">
+      <div class="nav-item" data-screen="map" onclick="Router.navigate('map')">
         <div class="nav-icon-wrap">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="20" height="20"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="20" height="20"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>
         </div>
-        <span class="nav-label">Alertes</span>
-        ${State.unreadCount > 0 ? `<span class="nav-badge">${State.unreadCount}</span>` : ''}
+        <span class="nav-label">Relais</span>
       </div>
       <div class="nav-item" data-screen="profile" onclick="Router.navigate('profile')">
         <div class="nav-icon-wrap">
