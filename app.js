@@ -128,6 +128,8 @@ const State = {
   shipments: null,
   relayPoints: null,
   recipientAddresses: null,
+  pricing: null,
+  pricingKey: null,
 
   load() {
     try {
@@ -1033,15 +1035,15 @@ function renderTracking(prefill = '') {
 
     <div id="tracking-result-zone" style="padding:16px"></div>
 
-    <!-- Recent demo -->
-    ${State.user ? `
+    <!-- Recent searches -->
+    ${(State.user && State.shipments && State.shipments.length > 0) ? `
       <div class="section-label" style="padding:8px 16px 6px">Recherches récentes</div>
-      ${DEMO_SHIPMENTS.slice(0,3).map(s => `
+      ${State.shipments.slice(0,3).map(s => `
         <div class="list-item" onclick="quickTrack('${s.tracking_number}')">
           <div class="list-item-icon" style="background:#FFF3E8">${icon('clock', 16, '#FF6C00')}</div>
           <div class="list-item-content">
             <div style="font-size:12px;font-family:monospace;font-weight:700;color:#FF6C00;letter-spacing:0.04em">${s.tracking_number}</div>
-            <div class="list-item-sub">${s.sender_commune} → ${s.recipient_commune} · ${s.recipient_first_name} ${s.recipient_last_name}</div>
+            <div class="list-item-sub">${s.sender_commune || ''} → ${s.recipient_commune || ''} · ${s.recipient_first_name || ''} ${s.recipient_last_name || ''}</div>
           </div>
           ${icon('chevronRight', 15, '#D1D5DB')}
         </div>
@@ -2116,7 +2118,42 @@ function saveStep2Inputs() {
   }
 }
 
+async function loadPricing(key) {
+  try {
+    const qs = new URLSearchParams({
+      sender_commune: createData.sender_commune || '',
+      recipient_commune: createData.recipient_commune || '',
+      package_size: createData.grid_type === 'courier' ? 'courrier' : (createData.package_type || 'petit'),
+      grid_type: createData.grid_type || 'colis',
+      weight: String(createData.weight || 0),
+    }).toString();
+    const { data } = await API.request('GET', '/api/pricing-grids/calculate?' + qs);
+    if (data && Array.isArray(data.modes)) {
+      State.pricing = data;
+      State.pricingKey = key;
+      const contentEl = document.getElementById('cs-content');
+      if (contentEl && typeof createStep !== 'undefined' && createStep === 2) contentEl.innerHTML = stepDeliveryMode();
+    }
+  } catch (e) { /* garder l'estimation locale */ }
+}
+
 function calculatePrice(pickupMethod, homeDelivery) {
+  // Prix serveur = source de verite, identique a la facturation backend (POST /shipments).
+  // GET /api/pricing-grids/calculate. Fallback sur l'estimation locale ci-dessous si hors-ligne.
+  const __pk = [createData.sender_commune, createData.recipient_commune, createData.grid_type, createData.package_type, createData.weight].join('|');
+  if (createData.sender_commune && createData.recipient_commune) {
+    if (State.pricing && State.pricingKey === __pk) {
+      const __mk = pickupMethod === 'home_pickup'
+        ? (homeDelivery ? 'home_to_home' : 'home_to_relay')
+        : (homeDelivery ? 'relay_to_home' : 'relay_to_relay');
+      const __m = (State.pricing.modes || []).find(x => x.key === __mk);
+      if (__m) return __m.final_price_fcfa;
+    } else if (State.pricingKey !== __pk) {
+      State.pricingKey = __pk;
+      State.pricing = null;
+      loadPricing(__pk);
+    }
+  }
   const isIntra = createData.sender_commune === createData.recipient_commune;
   let basePrice = 0;
   
